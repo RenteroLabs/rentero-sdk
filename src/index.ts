@@ -1,4 +1,8 @@
 
-import * as ReNFT from './ReNFT'
+import RenteroNFT from './ReNFT'
+import * as Rentero from './Rentero'
 
-export { ReNFT as Rentero }
+export {
+  Rentero,
+  RenteroNFT,
+}

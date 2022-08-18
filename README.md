@@ -1,9 +1,6 @@
 # Rentero-SDK-JS
 
-| :exclamation: The package is in development and breaking changes should be expected. Use at your own risk! |
-| :--------------------------------------------------------------------------------------------------------- |
-
-JS SDK For Integrating Rentero Protocol, allowing application developers easily query renter's NFTs info.
+JS SDK For Integrating Rentero Protocol, allowing application developers easily query renter's NFTs info and use Rentero Protocol.
 
 ## Installation
 
@@ -11,20 +8,31 @@ JS SDK For Integrating Rentero Protocol, allowing application developers easily 
 yarn add @rentero/sdk-js
 ```
 
-## Getting Start
+## Getting Started
 
 ```ts
-import { Rentero } from '@rentero/sdk-js'
+import { RenteroNFT } from '@rentero/sdk-js'
 
-const provider = new ethers.providers.JsonRpcProvider(<RPC_URL>)
-const contractAddress = '0x5A6E1d2d40c85dB942246Ad7cf1025b380FfcC40'
-const renterAddress = '0x576687d59d191A9B20110FB3e126Dbf27D8E42e0'
+const contractAddress = '0x80b4a4da97d676ee139bada2bf757b7f5afd0644'
+const renterAddress = '0x431b4ca18e269fc7e1f5af49b9f4e2af683f6207'
 
-const rentList =  await Rentero.getRentNFTsByAddress(provider, contractAddress, renterAddress)
-console.log("Renter's NFT list", rentList)
+const renteroNFT = new RenteroNFT('ropsten', [contractAddress])
+
+const result1 = await renteroNFT.getRentNFTsByAddress(renterAddress)
+console.log(result1)
+
+const result2 = await renteroNFT.getRentInfoById(contractAddress, 1)
+console.log(result2)
 ```
 
 ## Usage
+
+### `RenteroNFT`
+Pass in the blockchain network and NFT contracts, instantiate the object
+
+```ts
+new RenteroNFT(network: SUPPORT_NETWORK, targetContracts: string[])
+```
 
 ### `getRentNFTsByAddress`
 
@@ -32,43 +40,17 @@ Query all lease NFTs under the renter address
 
 ```ts
 const getRentNFTsByAddress: (
-  provider: providers.Provider,
-  contractAddress: string,
   renterAddress: string
-) => Promise<any[]>
+) => Promise<any>
 ```
 
-### `getRenterAddressById`
+### `getRentInfoById`
 
-Query the renter of the specified NFT
+Query the rent NFT info of the specified NFT
 
 ```ts
-const getRenterAddressById: (
-  provider: providers.Provider,
+const getRentInfoById: (
   contractAddress: string,
   nftId: number
-) => Promise<string>
-```
-
-### `getNFTOwnerById`
-
-Query the owner of the original NFT
-
-```ts
-const getNFTOwnerById: (
-  provider: providers.Provider,
-  contractAddress: string,
-  nftId: number
-) => Promise<string>
-```
-
-### `getOriginalContractAddress`
-
-Query the original NFT contract address
-
-```ts
-const getOriginalContractAddress: (
-  provider: providers.Provider,
-  contractAddress: string
-) => Promise<string>
+) => Promise<any>
 ```

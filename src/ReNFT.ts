@@ -1,69 +1,60 @@
-import { providers, ethers } from 'ethers'
-import { WRAPNFT_ABI } from './constants'
+import { request, gql } from 'graphql-request'
+import { NETWORK_GRAPHS, SUPPORT_NETWORK } from './constants'
 
-/**
- * Query all lease NFTs under the renter address
- * @param provider ethers provider
- * @param contractAddress target contract address
- * @param renterAddress renter address
- */
-export const getRentNFTsByAddress = async (
-  provider: providers.Provider,
-  contractAddress: string,
-  renterAddress: string) => {
+export default class RenteroNFT {
+  #targetContracts: string[]
+  #graphpath: string
 
-  const contract = new ethers.Contract(contractAddress, WRAPNFT_ABI, provider)
-  const data = await contract.tokenListOf(renterAddress)
+  /**
+   * Pass in the blockchain network and NFT contracts, instantiate the object
+   * @param network 
+   * @param targetContract 
+   */
+  constructor(network: SUPPORT_NETWORK, targetContracts: string[]) {
+    this.#targetContracts = targetContracts
+    this.#graphpath = NETWORK_GRAPHS[network]
+  }
 
-  return data as any[]
-}
+  /**
+   * Query all lease NFTs under the renter address
+   * @param renterAddress 
+   */
+  async getRentNFTsByAddress(renterAddress: string) {
+    const query = gql`
+      query getRentNFTs($renter: String!, $contracts: [String!]) {
+        leases(where: { renter: $renter, nftAddress_in: $contracts}) {
+          tokenId
+          nftAddress
+          lender
+          expires
+        }
+      }
+    `
+    const variables = {
+      renter: renterAddress,
+      contracts: this.#targetContracts
+    }
+    return await request(this.#graphpath, query, variables)
+  }
 
-/**
- * Query the renter of the specified NFT
- * @param provider ethers provider
- * @param contractAddress target contract address
- * @param nftId 
- */
-export const getRenterAddressById = async (
-  provider: providers.Provider,
-  contractAddress: string,
-  nftId: number) => {
-
-  const contract = new ethers.Contract(contractAddress, WRAPNFT_ABI, provider)
-  const data = await contract.borrowerOf(nftId)
-
-  return data as string
-}
-
-/**
- * Query the owner of the original NFT
- * @param provider ethers provider
- * @param contractAddress target contract address
- * @param nftId 
- * @returns 
- */
-export const getNFTOwnerById = async (
-  provider: providers.Provider,
-  contractAddress: string,
-  nftId: number
-) => {
-  const contract = new ethers.Contract(contractAddress, WRAPNFT_ABI, provider)
-  const data = await contract.originalOwnerOf(nftId)
-
-  return data as string
-}
-
-/**
- * Query the original NFT contract address
- * @param provider ethers provider
- * @param contractAddress target contract address
- */
-export const getOriginalContractAddress = async (
-  provider: providers.Provider,
-  contractAddress: string
-) => {
-  const contract = new ethers.Contract(contractAddress, WRAPNFT_ABI, provider)
-  const data = await contract.originalAddress()
-
-  return data as string
+  /**
+   * Query rent NFT info
+   * @param contractAddress 
+   * @param tokenId 
+   */
+  async getRentInfoById(contractAddress: string, tokenId: number) {
+    const query = gql`
+      query getRenterAddress($id: String!) {
+        lease(id: $id) {
+          renter
+          lender
+          expires
+        }
+      }
+    `
+    const variables = {
+      id: [contractAddress, tokenId].join('-')
+    }
+    return await request(this.#graphpath, query, variables)
+  }
 }

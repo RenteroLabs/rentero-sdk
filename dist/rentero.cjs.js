@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var ethers = require('ethers');
+var graphqlRequest = require('graphql-request');
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -29,35 +29,78 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-const WRAPNFT_ABI = [{ "inputs": [{ "internalType": "string", "name": "name_", "type": "string" }, { "internalType": "string", "name": "symbol_", "type": "string" }, { "internalType": "address", "name": "originalAddress_", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "approved", "type": "address" }, { "indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "operator", "type": "address" }, { "indexed": false, "internalType": "bool", "name": "approved", "type": "bool" }], "name": "ApprovalForAll", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "msgSender", "type": "address" }, { "indexed": false, "internalType": "address", "name": "nftAddress", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "Redeem", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "msgSender", "type": "address" }, { "indexed": false, "internalType": "address", "name": "nftAddress", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "Stake", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256" }, { "indexed": true, "internalType": "address", "name": "borrower", "type": "address" }], "name": "UpdateBorrow", "type": "event" }, { "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "borrowerOf", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "getApproved", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "address", "name": "operator", "type": "address" }], "name": "isApprovedForAll", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "operator", "type": "address" }, { "internalType": "address", "name": "from", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }, { "internalType": "bytes", "name": "data", "type": "bytes" }], "name": "onERC721Received", "outputs": [{ "internalType": "bytes4", "name": "", "type": "bytes4" }], "stateMutability": "pure", "type": "function" }, { "inputs": [], "name": "originalAddress", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "originalOwnerOf", "outputs": [{ "internalType": "address", "name": "owner", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "ownerOf", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "redeem", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "from", "type": "address" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "safeTransferFrom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "from", "type": "address" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }, { "internalType": "bytes", "name": "_data", "type": "bytes" }], "name": "safeTransferFrom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "operator", "type": "address" }, { "internalType": "bool", "name": "approved", "type": "bool" }], "name": "setApprovalForAll", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }, { "internalType": "address", "name": "borrower", "type": "address" }], "name": "setBorrower", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "stake", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }], "name": "supportsInterface", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "bAddress", "type": "address" }], "name": "tokenListOf", "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "tokenURI", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "from", "type": "address" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "transferFrom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }];
+function __classPrivateFieldGet(receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+}
 
-const getRentNFTsByAddress = (provider, contractAddress, renterAddress) => __awaiter(void 0, void 0, void 0, function* () {
-    const contract = new ethers.ethers.Contract(contractAddress, WRAPNFT_ABI, provider);
-    const data = yield contract.tokenListOf(renterAddress);
-    return data;
-});
-const getRenterAddressById = (provider, contractAddress, nftId) => __awaiter(void 0, void 0, void 0, function* () {
-    const contract = new ethers.ethers.Contract(contractAddress, WRAPNFT_ABI, provider);
-    const data = yield contract.borrowerOf(nftId);
-    return data;
-});
-const getNFTOwnerById = (provider, contractAddress, nftId) => __awaiter(void 0, void 0, void 0, function* () {
-    const contract = new ethers.ethers.Contract(contractAddress, WRAPNFT_ABI, provider);
-    const data = yield contract.originalOwnerOf(nftId);
-    return data;
-});
-const getOriginalContractAddress = (provider, contractAddress) => __awaiter(void 0, void 0, void 0, function* () {
-    const contract = new ethers.ethers.Contract(contractAddress, WRAPNFT_ABI, provider);
-    const data = yield contract.originalAddress();
-    return data;
-});
+function __classPrivateFieldSet(receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+}
 
-var ReNFT = /*#__PURE__*/Object.freeze({
+const NETWORK_GRAPHS = {
+    'mainnet': "",
+    "ropsten": 'https://api.thegraph.com/subgraphs/name/john-rentero/rentero-market',
+    "goerli": ''
+};
+
+var _RenteroNFT_targetContracts, _RenteroNFT_graphpath;
+class RenteroNFT {
+    constructor(network, targetContracts) {
+        _RenteroNFT_targetContracts.set(this, void 0);
+        _RenteroNFT_graphpath.set(this, void 0);
+        __classPrivateFieldSet(this, _RenteroNFT_targetContracts, targetContracts, "f");
+        __classPrivateFieldSet(this, _RenteroNFT_graphpath, NETWORK_GRAPHS[network], "f");
+    }
+    getRentNFTsByAddress(renterAddress) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = graphqlRequest.gql `
+      query getRentNFTs($renter: String!, $contracts: [String!]) {
+        leases(where: { renter: $renter, nftAddress_in: $contracts}) {
+          tokenId
+          nftAddress
+          lender
+          expires
+        }
+      }
+    `;
+            const variables = {
+                renter: renterAddress,
+                contracts: __classPrivateFieldGet(this, _RenteroNFT_targetContracts, "f")
+            };
+            return yield graphqlRequest.request(__classPrivateFieldGet(this, _RenteroNFT_graphpath, "f"), query, variables);
+        });
+    }
+    getRentInfoById(contractAddress, tokenId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = graphqlRequest.gql `
+      query getRenterAddress($id: String!) {
+        lease(id: $id) {
+          renter
+          lender
+          expires
+        }
+      }
+    `;
+            const variables = {
+                id: [contractAddress, tokenId].join('-')
+            };
+            return yield graphqlRequest.request(__classPrivateFieldGet(this, _RenteroNFT_graphpath, "f"), query, variables);
+        });
+    }
+}
+_RenteroNFT_targetContracts = new WeakMap(), _RenteroNFT_graphpath = new WeakMap();
+
+var Rentero = {};
+
+var Rentero$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    getRentNFTsByAddress: getRentNFTsByAddress,
-    getRenterAddressById: getRenterAddressById,
-    getNFTOwnerById: getNFTOwnerById,
-    getOriginalContractAddress: getOriginalContractAddress
+    'default': Rentero
 });
 
-exports.Rentero = ReNFT;
+exports.Rentero = Rentero$1;
+exports.RenteroNFT = RenteroNFT;

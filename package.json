@@ -1,16 +1,22 @@
 {
   "name": "@rentero/sdk-js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "JS SDK For Integrating Rentero Protocol",
   "main": "dist/rentero.cjs.js",
   "module": "dist/rentero.esm.js",
   "types": "dist/types",
-  "repository": "git@github.com:CodingInWeb3/Rentero-SDK-JS.git",
+  "repository": "git@github.com:RenteroLabs/rentero-sdk.git",
   "author": "D-lyw <yuanwang@rentero.io>",
   "license": "MIT",
   "files": [
     "dist",
     "README.md"
+  ],
+  "keywords": [
+    "Rentero",
+    "SDK",
+    "Rentero Protocol",
+    "NFT"
   ],
   "devDependencies": {
     "dotenv": "^16.0.1",
@@ -25,6 +31,8 @@
     "test": "ts-node test/rentero.ts"
   },
   "dependencies": {
-    "ethers": "^5.6.9"
+    "ethers": "^5.6.9",
+    "graphql": "^16.6.0",
+    "graphql-request": "^4.3.0"
   }
 }
