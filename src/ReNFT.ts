@@ -11,7 +11,7 @@ export default class RenteroNFT {
    * @param targetContract 
    */
   constructor(network: SUPPORT_NETWORK, targetContracts: string[]) {
-    this.#targetContracts = targetContracts
+    this.#targetContracts = targetContracts.map(item => item.toLowerCase())
     this.#graphpath = NETWORK_GRAPHS[network]
   }
 
@@ -20,9 +20,14 @@ export default class RenteroNFT {
    * @param renterAddress 
    */
   async getRentNFTsByAddress(renterAddress: string) {
+    const timestamp = (new Date().getTime() / 1000).toFixed()
     const query = gql`
-      query getRentNFTs($renter: String!, $contracts: [String!]) {
-        leases(where: { renter: $renter, nftAddress_in: $contracts}) {
+      query getRentNFTs($renter: String!, $contracts: [String!], $timestamp: String!) {
+        leases(where: { 
+          renter: $renter, 
+          nftAddress_in: $contracts, 
+          expires_gt: $timestamp ,
+          }) {
           tokenId
           nftAddress
           lender
@@ -31,8 +36,9 @@ export default class RenteroNFT {
       }
     `
     const variables = {
-      renter: renterAddress,
-      contracts: this.#targetContracts
+      renter: renterAddress.toLowerCase(),
+      contracts: this.#targetContracts,
+      timestamp: timestamp
     }
     return await request(this.#graphpath, query, variables)
   }
@@ -53,8 +59,57 @@ export default class RenteroNFT {
       }
     `
     const variables = {
-      id: [contractAddress, tokenId].join('-')
+      id: [contractAddress.toLowerCase(), tokenId].join('-')
     }
+    return await request(this.#graphpath, query, variables)
+  }
+
+  /**
+   * Query lend NFT list by lender address
+   * @param lendAddress 
+   * @returns 
+   */
+  async getLendNFTsByAddress(lendAddress: string) {
+    const query = gql`
+      query getLendNFTs($lender: String!, $contracts: [String!]) {
+        leases(where: {
+          lender: $lender, 
+          nftAddress_in: $contracts, 
+        }) {
+          tokenId
+          nftAddress
+          lender
+          renter
+          expires 
+        }
+      }
+    `
+    const variables = {
+      lender: lendAddress.toLowerCase(),
+      contracts: this.#targetContracts,
+    }
+    return await request(this.#graphpath, query, variables)
+  }
+
+  /**
+   * Query all NFTs in Rentero Market by the passed NFT Collections
+   * @returns 
+   */
+  async getAllNFTsInMarket() {
+    const query = gql`
+      query getNFTs($contracts: [String!]) {
+        leases(where: {nftAddress_in: $contracts}) {
+          tokenId
+          nftAddress
+          lender
+          renter
+          expires 
+        }
+      }
+    `
+    const variables = {
+      contracts: this.#targetContracts,
+    } 
     return await request(this.#graphpath, query, variables)
   }
 }

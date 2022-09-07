@@ -4,4 +4,6 @@ export default class RenteroNFT {
     constructor(network: SUPPORT_NETWORK, targetContracts: string[]);
     getRentNFTsByAddress(renterAddress: string): Promise<any>;
     getRentInfoById(contractAddress: string, tokenId: number): Promise<any>;
+    getLendNFTsByAddress(lendAddress: string): Promise<any>;
+    getAllNFTsInMarket(): Promise<any>;
 }

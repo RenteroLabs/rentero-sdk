@@ -40,8 +40,9 @@ function __classPrivateFieldSet(receiver, state, value, kind, f) {
 
 const NETWORK_GRAPHS = {
     'mainnet': "",
-    "ropsten": 'https://api.thegraph.com/subgraphs/name/john-rentero/rentero-market',
-    "goerli": ''
+    "rinkeby": "https://rinkeby.rentero.io/subgraphs/name/john-rentero/rentero-market",
+    "bsc": "",
+    "bsctestnet": "https://bsc-testnet.rentero.io/subgraphs/name/john-rentero/rentero-market",
 };
 
 var _RenteroNFT_targetContracts, _RenteroNFT_graphpath;
@@ -49,14 +50,19 @@ class RenteroNFT {
     constructor(network, targetContracts) {
         _RenteroNFT_targetContracts.set(this, void 0);
         _RenteroNFT_graphpath.set(this, void 0);
-        __classPrivateFieldSet(this, _RenteroNFT_targetContracts, targetContracts, "f");
+        __classPrivateFieldSet(this, _RenteroNFT_targetContracts, targetContracts.map(item => item.toLowerCase()), "f");
         __classPrivateFieldSet(this, _RenteroNFT_graphpath, NETWORK_GRAPHS[network], "f");
     }
     getRentNFTsByAddress(renterAddress) {
         return __awaiter(this, void 0, void 0, function* () {
+            const timestamp = (new Date().getTime() / 1000).toFixed();
             const query = gql `
-      query getRentNFTs($renter: String!, $contracts: [String!]) {
-        leases(where: { renter: $renter, nftAddress_in: $contracts}) {
+      query getRentNFTs($renter: String!, $contracts: [String!], $timestamp: String!) {
+        leases(where: { 
+          renter: $renter, 
+          nftAddress_in: $contracts, 
+          expires_gt: $timestamp ,
+          }) {
           tokenId
           nftAddress
           lender
@@ -65,8 +71,9 @@ class RenteroNFT {
       }
     `;
             const variables = {
-                renter: renterAddress,
-                contracts: __classPrivateFieldGet(this, _RenteroNFT_targetContracts, "f")
+                renter: renterAddress.toLowerCase(),
+                contracts: __classPrivateFieldGet(this, _RenteroNFT_targetContracts, "f"),
+                timestamp: timestamp
             };
             return yield request(__classPrivateFieldGet(this, _RenteroNFT_graphpath, "f"), query, variables);
         });
@@ -83,7 +90,49 @@ class RenteroNFT {
       }
     `;
             const variables = {
-                id: [contractAddress, tokenId].join('-')
+                id: [contractAddress.toLowerCase(), tokenId].join('-')
+            };
+            return yield request(__classPrivateFieldGet(this, _RenteroNFT_graphpath, "f"), query, variables);
+        });
+    }
+    getLendNFTsByAddress(lendAddress) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = gql `
+      query getLendNFTs($lender: String!, $contracts: [String!]) {
+        leases(where: {
+          lender: $lender, 
+          nftAddress_in: $contracts, 
+        }) {
+          tokenId
+          nftAddress
+          lender
+          renter
+          expires 
+        }
+      }
+    `;
+            const variables = {
+                lender: lendAddress.toLowerCase(),
+                contracts: __classPrivateFieldGet(this, _RenteroNFT_targetContracts, "f"),
+            };
+            return yield request(__classPrivateFieldGet(this, _RenteroNFT_graphpath, "f"), query, variables);
+        });
+    }
+    getAllNFTsInMarket() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const query = gql `
+      query getNFTs($contracts: [String!]) {
+        leases(where: {nftAddress_in: $contracts}) {
+          tokenId
+          nftAddress
+          lender
+          renter
+          expires 
+        }
+      }
+    `;
+            const variables = {
+                contracts: __classPrivateFieldGet(this, _RenteroNFT_targetContracts, "f"),
             };
             return yield request(__classPrivateFieldGet(this, _RenteroNFT_graphpath, "f"), query, variables);
         });
