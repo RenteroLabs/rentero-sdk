@@ -15,3 +15,8 @@
 ### **v0.0.10**
 - ✨ feat(api): add `getLendNFTsByAddress` and `getAllNFTsInMarket` functions in RenteroNFT class
 - refactor: support chains includes `'mainnet' | 'rinkeby' | 'bsc' | 'bsctestnet'`
+
+
+### **v0.0.11**
+- ✨ feat(api): add `Rentero` class, include `lendNFT`, `reLendNFT`, `rentNFT`, `earlyReturn`, `redeemNFT` five functions
+- ✅ docs: add Rentero class usage introduction
