@@ -28,10 +28,22 @@ export default class RenteroNFT {
           nftAddress_in: $contracts, 
           expires_gt: $timestamp ,
           }) {
-          tokenId
-          nftAddress
-          lender
-          expires
+            chain
+            daysPerPeriod
+            deposit
+            erc20Address
+            expires
+            id
+            lender
+            maxRentalDays
+            minRentalDays
+            nftAddress
+            paidExpires
+            rentPerDay
+            renter
+            start
+            tokenId
+            whitelist
         }
       }
     `
@@ -52,9 +64,22 @@ export default class RenteroNFT {
     const query = gql`
       query getRenterAddress($id: String!) {
         lease(id: $id) {
-          renter
-          lender
+          chain
+          daysPerPeriod
+          deposit
+          erc20Address
           expires
+          id
+          lender
+          maxRentalDays
+          minRentalDays
+          nftAddress
+          paidExpires
+          rentPerDay
+          renter
+          start
+          tokenId
+          whitelist
         }
       }
     `
@@ -76,11 +101,22 @@ export default class RenteroNFT {
           lender: $lender, 
           nftAddress_in: $contracts, 
         }) {
-          tokenId
-          nftAddress
+          chain
+          daysPerPeriod
+          deposit
+          erc20Address
+          expires
+          id
           lender
+          maxRentalDays
+          minRentalDays
+          nftAddress
+          paidExpires
+          rentPerDay
           renter
-          expires 
+          start
+          tokenId
+          whitelist
         }
       }
     `
@@ -99,17 +135,28 @@ export default class RenteroNFT {
     const query = gql`
       query getNFTs($contracts: [String!]) {
         leases(where: {nftAddress_in: $contracts}) {
-          tokenId
-          nftAddress
+          chain
+          daysPerPeriod
+          deposit
+          erc20Address
+          expires
+          id
           lender
+          maxRentalDays
+          minRentalDays
+          nftAddress
+          paidExpires
+          rentPerDay
           renter
-          expires 
+          start
+          tokenId
+          whitelist 
         }
       }
     `
     const variables = {
       contracts: this.#targetContracts,
-    } 
+    }
     return await request(this.#graphpath, query, variables)
   }
 }
