@@ -53,7 +53,7 @@ const DEFAULT_MARKET_ADDRESS = {
     "mainnet-installment": "",
     "rinkeby-installment": "0x48430954949396E18ADeBb292e60D1B84782D6bD",
     "bsc-installment": "",
-    "bsctestnet-installment": "0x4912C81659d6929B180AA828d4FBC58290C78833",
+    "bsctestnet-installment": "0xDe2748F8647E1aDBc98d682a1BC2745406c07451",
 };
 const MARKET_ABI = [
     {
