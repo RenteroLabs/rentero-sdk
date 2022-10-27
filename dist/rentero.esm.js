@@ -41,13 +41,14 @@ function __classPrivateFieldSet(receiver, state, value, kind, f) {
 
 const NETWORK_GRAPHS = {
     'mainnet': "",
-    "rinkeby": "https://rinkeby.rentero.io/subgraphs/name/john-rentero/rentero-market",
+    "goerli": "https://goerli.rentero.io/subgraphs/name/john-rentero/rentero-market",
     "bsc": "",
     "bsctestnet": "https://bsc-testnet.rentero.io/subgraphs/name/john-rentero/rentero-market",
 };
 const DEFAULT_MARKET_ADDRESS = {
     "mainnet-installment": "",
     "rinkeby-installment": "0x48430954949396E18ADeBb292e60D1B84782D6bD",
+    "goerli-installment": "0x2f4c75EbB3F14453Da1101d777BAb85Fe91fDBdE",
     "bsc-installment": "",
     "bsctestnet-installment": "0xDe2748F8647E1aDBc98d682a1BC2745406c07451",
 };

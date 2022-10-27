@@ -3,7 +3,7 @@ import { RenteroNFT } from '../src/index'
 require("dotenv").config();
 
 const main = async () => {
-  const providerUrl = `https://ropsten.infura.io/v3/${process.env.INFURA_ID}`
+  const providerUrl = `https://goerli.infura.io/v3/${process.env.INFURA_ID}`
 
   const provider = new ethers.providers.JsonRpcProvider(providerUrl)
   const contractAddress = '0x5A6E1d2d40c85dB942246Ad7cf1025b380FfcC40'
