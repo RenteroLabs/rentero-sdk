@@ -1,6 +1,6 @@
 {
   "name": "@rentero/sdk-js",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "JS SDK For Integrating Rentero Protocol",
   "main": "dist/rentero.cjs.js",
   "module": "dist/rentero.esm.js",
